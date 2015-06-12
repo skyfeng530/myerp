@@ -137,5 +137,10 @@ public class BackgroundController
 	{
 		return "/background/framework/center";
 	}
+	@RequestMapping("noDevelop")
+	public String noDevelop(Model model)
+	{
+		return "/background/noDevelop";
+	}
 	
 }
