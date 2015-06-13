@@ -31,5 +31,29 @@ public class DeviceController {
 		model.addAttribute("pageView", pageView);
 		return "/background/device/list";
 	}
-
+	
+	@RequestMapping(value="addDevice")
+	public String addDevice(Model model,Device device){
+		deviceService.add(device);
+		return "/background/device/add";
+	}
+	
+	@RequestMapping(value="add")
+	public String add(Model model,Device device){
+		deviceService.add(device);
+		return "redirect:list.html";
+	}
+	
+	/**
+	 * É¾³ýËùÑ¡µÄ
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("deleteAll")
+	public String deleteAll(Model model, String[] check) {
+		for (String string : check) {
+			deviceService.delete(string);
+		}
+		return "redirect:list.html";
+	}
 }

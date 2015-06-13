@@ -24,5 +24,13 @@ public class DeviceServiceImpl implements DeviceService {
 		return pageView;
 	}
 
+	public void add(Device device)
+	{
+		deviceDao.add(device);
+	}
 
+	@Override
+	public void delete(String string) {
+		deviceDao.delete(string);
+	}
 }

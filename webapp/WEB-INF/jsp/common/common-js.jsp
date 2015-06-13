@@ -111,53 +111,53 @@ function pageNow(pageNow){
 		};
 }
 //<!--		################# 全选	    取消全选      -->
-		function selectAllCheckBox()
-			{
-				var chose;
-				if(document.getElementById("chose").checked){
-					chose = document.getElementById("chose").checked;
-				}
-				if(document.getElementById("choseAll").checked){
-					chose = document.getElementById("choseAll").checked;
-				}
-				var checkboxArray = document.getElementsByName("check");
-				if(checkboxArray != null)
-				{
-					for(var i = 0; i < checkboxArray.length; i++)
-					{
-						checkboxArray[i].checked = chose;
-					};
-				};
-			}
+function selectAllCheckBox()
+{
+	var chose;
+	if(document.getElementById("chose").checked){
+		chose = document.getElementById("chose").checked;
+	}
+	if(document.getElementById("choseAll").checked){
+		chose = document.getElementById("choseAll").checked;
+	}
+	var checkboxArray = document.getElementsByName("check");
+	if(checkboxArray != null)
+	{
+		for(var i = 0; i < checkboxArray.length; i++)
+		{
+			checkboxArray[i].checked = chose;
+		};
+	};
+}
 
 //点击删除时是否有勾选
 function result()
+{
+	var checks = document.getElementsByName("check");
+	
+	for(var i = 0; i < checks.length; i++)
 	{
-		var checks = document.getElementsByName("check");
-		
-		for(var i = 0; i < checks.length; i++)
+		if(checks[i].checked == true)
 		{
-			if(checks[i].checked == true)
-			{
-				return false;
-			};
+			return false;
 		};
-		
-	}
+	};
+	
+}
 function deleteAll(){
-	var f=$("#fenye").attr("action");//获取表单action的属性值
-	f=f.substring(0,f.lastIndexOf("/")+1);
-		if(result() != false)
-		{
-			alert(" 请 选 择 你 要 删 除 的 项 ！");
-		}else
-		{
-			if(window.confirm(" 你 确  定 要 全 部 删 除 吗 ！删 除 后 不 可 恢 复 !"))
-			{ 
-			    document.fenye.action = f+"deleteAll.html";
-		 		document.fenye.submit();
-			};
+var f=$("#fenye").attr("action");//获取表单action的属性值
+f=f.substring(0,f.lastIndexOf("/")+1);
+	if(result() != false)
+	{
+		alert(" 请 选 择 你 要 删 除 的 项 ！");
+	}else
+	{
+		if(window.confirm(" 你 确  定 要 全 部 删 除 吗 ！删 除 后 不 可 恢 复 !"))
+		{ 
+		    document.fenye.action = f+"deleteAll.html";
+	 		document.fenye.submit();
 		};
+	};
 
 	}
 	function deleteId(url){

@@ -9,7 +9,7 @@
 	href="${pageContext.servletContext.contextPath }/css/fenyecss.css" />
 </head>
 <body>
-<form id="fenye" name="fenye" action="${pageContext.servletContext.contextPath }/background/user/query.html" method="post">
+<form id="fenye" name="fenye" action="${pageContext.servletContext.contextPath }/background/device/list.html" method="post">
 <table width="100%">
   <tr>
     <td height="30" background="${pageContext.servletContext.contextPath }/images/tab_05.gif"><table width="100%">
@@ -46,7 +46,7 @@
                 <td width="60"><table width="90%">
                   <tr>
                     <td class="STYLE1"><div align="center"><img src="${pageContext.servletContext.contextPath }/images/22.gif" width="14" height="14" /></div></td>
-                    <td class="STYLE1"><div align="center">新增</div></td>
+                    <td class="STYLE1"><div align="center"><a href="${pageContext.servletContext.contextPath }/background/device/addDevice.html">新增</a></div></td>
                   </tr>
                 </table></td>
               </tr>
@@ -64,7 +64,7 @@
 		<fieldset class="search">
 			<legend><img src="${pageContext.servletContext.contextPath }/images/search_btn.gif" align="middle"/>&nbsp;<span class="STYLE1" style="color: blue;">高级查找</span></legend>
 			<div class="search_content">
-				设备名称：<input type="text" name="userName" value="${param.deviceName}" style="height: 20px"/>　　
+				设备名称：<input type="text" name="deviceName" value="${param.deviceName}" style="height: 20px"/>　　
 				<input type="submit" value="开始查询" class="input_btn_style1"/>&nbsp;&nbsp;
 				<input type="reset" value="重置" class="input_btn_style1"/>
 			</div>
@@ -85,7 +85,6 @@
             <td width="8%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif" ><span class="STYLE1">设备名称</span></td>
             <td width="6%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif" ><span class="STYLE1">型号</span></td>
             <td width="6%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">类型</td>
-            <td width="6%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">价格</td>
             <td width="6%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">数量</td>
             <td width="6%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">是否检查</td>
             <td width="9%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">厂商</td>
@@ -102,10 +101,17 @@
               <input type="checkbox" name="check" value="${key.id}" />
             </td>
             
-            <td height="20" ><span class="STYLE1"><a href="${pageContext.servletContext.contextPath }/background/user/getById.html?userId=${key.id}&&type=0">${key.deviceName}</a></span></td>
+            <td height="20" ><span class="STYLE1">${key.deviceName}</span></td>
             <td height="20" ><span class="STYLE1">${key.deviceVersion}</span></td>
-            <td height="20" ><span class="STYLE1">${key.deviceType}</span></td>
-            <td height="20" ><span class="STYLE1">${key.price}</span></td>
+            <c:if test="${key.deviceType eq 0}">
+            	<td height="20" ><span class="STYLE1">元器件</span></td>
+            </c:if>
+            <c:if test="${key.deviceType eq 1}">
+            	<td height="20" ><span class="STYLE1">成品</span></td>
+            </c:if>
+            <c:if test="${key.deviceType eq 2}">
+            	<td height="20" ><span class="STYLE1">半成品</span></td>
+            </c:if>
             <td height="20" ><span class="STYLE1" style="color: blue;">${key.deviceCount}</span></td>
             <c:if test="${key.ischeckout eq 0}">
 	            <td height="20" ><span class="STYLE1">否</span></td>

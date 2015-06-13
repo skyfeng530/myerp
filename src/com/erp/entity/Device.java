@@ -5,7 +5,6 @@ public class Device {
 	private String deviceName;
 	private String deviceVersion;
 	private String deviceType;
-	private String price;
 	private int deviceCount;
 	private int ischeckout;
 	private String manufacturers;
@@ -40,12 +39,6 @@ public class Device {
 	}
 	public void setDeviceType(String deviceType) {
 		this.deviceType = deviceType;
-	}
-	public String getPrice() {
-		return price;
-	}
-	public void setPrice(String price) {
-		this.price = price;
 	}
 	public int getDeviceCount() {
 		return deviceCount;
