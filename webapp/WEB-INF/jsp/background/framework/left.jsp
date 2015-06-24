@@ -68,7 +68,7 @@ body {
 													</td>
 													<td width="42%">
 														<font
-															style="height: 1; font-size: 9pt; color: #bfdbeb; filter: glow(color =   #1070a3, strength =   1);font-weight: 600;">后台管理</font>
+															style="height: 1; font-size: 9pt; color: #bfdbeb; filter: glow(color =   #1070a3, strength =   1);font-weight: 600;">ERP管理</font>
 													</td>
 													<td width="18%">
 														&nbsp;

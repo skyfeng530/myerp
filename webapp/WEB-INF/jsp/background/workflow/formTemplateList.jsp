@@ -1,5 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@include file="../../common/taglib.jsp" %>
+<%@include file="../../common/common-css.jsp" %>
+<%@include file="../../common/common-js.jsp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -45,13 +47,26 @@
 				</table>
 			</td> 
 		</tr>
+		<c:forEach var="key" items="${pageView.records}">
 		<tr>
-			<td class="Detail dataContainer" datakey="formTemplateList">
+			<td>
 				<!-- 显示表单模板列表 -->
-				<div id="DetailBlock" class="template"> 
+				<div id="DetailBlock"> 
 					<img width="16" height="16" src="${pageContext.servletContext.contextPath }/style/images/FileType/doc.gif"/> 
-					<a href="applyFormUI.html">${formTemplate.name}请假申请单</a>
+					<a href="applyFormUI.html">${key.name}请假申请</a>
 				</div>
+			</td>
+		</tr>
+		</c:forEach>
+		<tr>
+			<td>
+				<!-- 显示表单模板列表 -->
+				<c:forEach var="key" items="${pdList}">
+					<div id="DetailBlock"> 
+						<img width="16" height="16" src="${pageContext.servletContext.contextPath }/style/images/FileType/doc.gif"/> 
+						<a href="applyFormUI.html?deploymentId=${key.deploymentId}">${key.name}</a>
+					</div>
+				</c:forEach>
 			</td>
 		</tr>
 	</tbody>

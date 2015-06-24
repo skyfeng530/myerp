@@ -36,7 +36,7 @@ function permissio(id){
             <td width="46%" valign="middle"><table width="100%">
               <tr>
                 <td width="5%"><div align="center"><img src="${pageContext.servletContext.contextPath }/images/tb.gif" width="16" height="16" /></div></td>
-                <td width="95%" class="STYLE1"><span class="STYLE3">你当前的位置</span>：文章管理-添加文章</td>
+                <td width="95%" class="STYLE1"><span class="STYLE3">你当前的位置</span>：角色管理-角色列表</td>
               </tr>
             </table></td>
             <td width="54%"><table align="right" >
@@ -62,7 +62,7 @@ function permissio(id){
                 <td width="60"><table width="90%">
                   <tr>
                     <td class="STYLE1"><div align="center"><img src="${pageContext.servletContext.contextPath }/images/22.gif" width="14" height="14" /></div></td>
-                    <td class="STYLE1"><a href="${pageContext.servletContext.contextPath }/role/addUI.html">新增</a></td>
+                    <td class="STYLE1"><a href="${pageContext.servletContext.contextPath }/background/role/addUI.html">新增</a></td>
                   </tr>
                 </table></td>
               </tr>

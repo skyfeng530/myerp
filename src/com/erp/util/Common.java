@@ -8,7 +8,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,15 +104,26 @@ public class Common {
 	 * @return
 	 */
 	public static String toIpAddr(HttpServletRequest request) {
-		String ip = request.getHeader("x-forwarded-for");
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getHeader("WL-Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-			ip = request.getRemoteAddr();
+		String ip = request.getHeader("X-Forwarded-For");
+		/*if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }*/
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
 		}
 		return ip;
 	}

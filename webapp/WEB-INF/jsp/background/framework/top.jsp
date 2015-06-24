@@ -97,7 +97,7 @@ function MM_swapImage() { //v3.0
             <td valign="bottom">&nbsp;</td>
           </tr>
         </table></td>
-        <td width="200"><img src="${pageContext.servletContext.contextPath }/images/user.gif" width="10" height="10" /> <span class="STYLE1">欢迎您:
+        <td width="120"><img src="${pageContext.servletContext.contextPath }/images/user.gif" width="10" height="10" /> <span class="STYLE1">欢迎您:
         ${userSession.userName}</span></td>
       </tr>
     </table></td>

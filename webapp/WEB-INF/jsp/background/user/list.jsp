@@ -70,7 +70,7 @@ function userRole(id){
                 <td width="60"><table width="90%">
                   <tr>
                     <td class="STYLE1"><div align="center"><img src="${pageContext.servletContext.contextPath }/images/22.gif" width="14" height="14" /></div></td>
-                    <td class="STYLE1"><div align="center">新增</div></td>
+                    <td class="STYLE1"><div align="center"><a href="${pageContext.servletContext.contextPath }/background/user/addUI.html">新增</a></div></td>
                   </tr>
                 </table></td>
               </tr>

@@ -14,5 +14,6 @@
 		
 		<typeAlias type="com.erp.entity.Log" alias="Log"/>
 		<typeAlias type="com.erp.entity.Device" alias="Device"/>
+		<typeAlias type="com.erp.entity.BusLeave" alias="BusLeave"/>
 	</typeAliases>
 </configuration>

@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>后台管理系统</title>
+<title>ERP管理系统</title>
 </head>
 
 <frameset rows="83,*" cols="*" framespacing="0" frameborder="no" border="0">
