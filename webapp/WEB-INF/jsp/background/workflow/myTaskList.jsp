@@ -38,20 +38,22 @@
         <td width="8" background="${pageContext.servletContext.contextPath }/images/tab_12.gif">&nbsp;</td>
         <td><table class="ttab" width="100%" cellspacing="1" onmouseover="changeto()"  onmouseout="changeback()">
           <tr align="CENTER" valign="MIDDLE" id="TableTitle">
-			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">标题</td>
-			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">申请人</td>
-			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">申请日期</td>
-			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">申请状态</td>
+			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">任务ID</td>
+			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">任务当前步骤名称</td>
+			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">创建时间</td>
+			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">办理人</td>
 			<td width="20%" height="22" background="${pageContext.servletContext.contextPath }/images/bg.gif"  class="STYLE1">相关操作</td>
 		</tr>
-          <c:forEach var="key" items="${tasks}">
+          <c:forEach var="key" items="${pageView.records}">
           <tr>
-            <td><a href="${pageContext.servletContext.contextPath }/Flow_Formflow/showForm.html">${key.pdname }</a></td>
-			<td>${key.username }</td>
-			<td>${key.applyDate}</td>
-			<td>${key.state}</td>
-			<td><a href="${pageContext.servletContext.contextPath }/Flow_Formflow/showForm.html">查看申请信息</a>
-				<a href="${pageContext.servletContext.contextPath }/Flow_Formflow/approvedHistory.html">查看流转记录</a>
+            <td><a href="#">${key.id }</a></td>
+			<td>${key.name }</td>
+			<td>
+				<fmt:formatDate value="${key.createTime}" pattern="yyyy-MM-dd HH:mm"/>
+			</td>
+			<td>${key.assignee}</td>
+			<td><a href="${pageContext.servletContext.contextPath }/background/workflow/viewTaskForm.html?taskId=${key.id}">办理任务</a>
+				<a href="${pageContext.servletContext.contextPath }/background/workflow/myTaskList.html">查看当前流程图</a>
 			</td>
 		  </tr> 
           </c:forEach>

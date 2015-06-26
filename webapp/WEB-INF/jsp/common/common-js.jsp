@@ -159,7 +159,7 @@ f=f.substring(0,f.lastIndexOf("/")+1);
 		};
 	};
 
-	}
+}
 	function deleteId(url){
 		if(window.confirm(" 你 确  定 要 删 除 吗 ！删 除 后 不 可 恢 复 !"))
 		{ 

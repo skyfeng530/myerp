@@ -17,10 +17,15 @@
 		select
 		<include refid="selectId" />
 		from busleave
+		<where>
+			<if test="t.username != null and t.username != ''">
+				username like '%${t.username}%'
+			</if>
+		</where>
 	</select>
 	
 	<!-- 增加设备 -->
-	<insert id="add" parameterType="busleave">
+	<insert id="add" parameterType="BusLeave">
 		INSERT INTO busleave
 	        (days,
 			content,
@@ -36,6 +41,21 @@
 			#{username},
 			#{state})
 	</insert>
+	
+	<select id="getById" parameterType="String" resultType="BusLeave">
+		select
+		<include refid="selectId" />
+		from busleave where id=#{id}
+	</select>
+	<update id="update" parameterType="BusLeave">
+		update busleave
+		<set>
+			<if test="state != null and state != ''">
+				state=#{state},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
 	
 	<delete id="deleteById" parameterType="String">
 		delete from device busleave

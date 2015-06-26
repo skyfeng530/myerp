@@ -3,13 +3,15 @@ package com.erp.entity;
 import java.util.Date;
 
 /**
- * 请假单
+ * 申请单
  */
 public class MyTask {
 	private Long id;//主键ID
 	private String pdname;// 申请单类型
 	private String pdid;// 流程定义id
 	private String pdkey;// 流程定义key
+	private String taskId;
+	private String title;//流程单标题
 	private Date applyDate;// 申请时间
 	private String username;// 申请人
 	private Integer state=0;// 申请单状态 0初始录入,1.开始审批,2为审批完成
@@ -20,6 +22,22 @@ public class MyTask {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 
 	public String getPdname() {

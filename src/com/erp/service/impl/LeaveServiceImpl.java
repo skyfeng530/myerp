@@ -19,8 +19,7 @@ public class LeaveServiceImpl implements LeaveService {
 
 	@Override
 	public List<BusLeave> query(PageView pageView, BusLeave leave) {
-		
-		return leaveDao.query(new PageView(), leave);
+		return leaveDao.query(pageView, leave);
 	}
 
 	@Override

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,8 @@ import com.erp.entity.MyTask;
 import com.erp.entity.WorkflowBean;
 import com.erp.service.IWorkflowService;
 import com.erp.service.LeaveService;
+import com.erp.util.Common;
+import com.erp.util.PageView;
 import com.erp.util.SessionContext;
 
 @Controller
@@ -145,25 +149,19 @@ public class Workflowcontroller{
 	 * @return
 	 */
 	@RequestMapping(value="myTaskList")
-	public String myTaskList(HttpServletRequest request,Model model,BusLeave busLeave){
-		String pdkey = request.getParameter("pdkey");
-		busLeave.setUsername(SessionContext.get(request).getUserName());
-		List<MyTask> tasks = new ArrayList<MyTask>();
-		if ("BusLeave".equals(pdkey)) {
-			leaveService.add(busLeave);
-			List<BusLeave> leaves = leaveService.query(null, busLeave);
-			for (BusLeave leave : leaves) {
-				MyTask t = new MyTask();
-				t.setId(leave.getId());
-				t.setApplyDate(leave.getLeaveDate());
-				t.setPdid(pdkey);
-				t.setUsername(leave.getUsername());
-				t.setPdname(leave.getContent());
-				t.setState(leave.getState());
-				tasks.add(t);
-			}
+	public String myTaskList(HttpServletRequest request,Model model,BusLeave busLeave, String pageNow){
+		PageView pageView = null;
+		if(Common.isEmpty(pageNow)){
+			pageView = new PageView(1);
+		}else{
+			pageView = new PageView(Integer.parseInt(pageNow));
 		}
-		model.addAttribute("tasks", tasks);
+		//1：从Session中获取当前用户名
+		String name = SessionContext.get(request).getUserName();
+		//2：使用当前用户名查询正在执行的任务表，获取当前任务的集合List<Task>
+		List<Task> tasks = workflowService.findTaskListByName(pageView,name); 
+		pageView.setRecords(tasks);
+		model.addAttribute("pageView", pageView);
 		return "/background/workflow/myTaskList";
 	}
 	
@@ -172,8 +170,85 @@ public class Workflowcontroller{
 	 * @return
 	 */
 	@RequestMapping(value="myApplyList")
-	public String myApplyList(){
+	public String myApplyList(HttpServletRequest request,Model model,BusLeave busLeave, String pageNow){
+		PageView pageView = null;
+		if(Common.isEmpty(pageNow)){
+			pageView = new PageView(1);
+		}else{
+			pageView = new PageView(Integer.parseInt(pageNow));
+		}
+		//查询所有流程定义
+		List<ProcessDefinition> pdList = workflowService.findProcessDefinitionList();
+		//将所有流程定义，封装到MyTask类
+		List<MyTask> tasks = new ArrayList<MyTask>();
+		//从session获取当前用户名
+		busLeave.setUsername(SessionContext.get(request).getUserName());
+		if (null != pdList && pdList.size() > 0) {
+			for (ProcessDefinition pd : pdList) {
+				String className = pd.getKey();
+				String pdname = pd.getName();
+				if ("BusLeave".equals(className)) {
+					List<BusLeave> leaves = leaveService.query(pageView, busLeave);
+					for (BusLeave leave : leaves) {
+						MyTask t = new MyTask();
+						t.setId(leave.getId());
+						t.setApplyDate(leave.getLeaveDate());
+						t.setPdid(className);
+						t.setPdname(pdname);
+						t.setTitle(leave.getContent());
+						t.setUsername(leave.getUsername());
+						t.setState(leave.getState());
+						tasks.add(t);
+					}
+				}
+			}
+		}
+		pageView.setRecords(tasks);
+		model.addAttribute("pageView", pageView);
 		return "/background/workflow/myApplyList";
+	}
+	
+	// 启动流程
+	@RequestMapping(value="startProcess")
+	public String startProcess(MyTask task){
+		//更新请假状态，启动流程实例，让启动的流程实例关联业务
+		workflowService.saveStartProcess(task);
+		return "redirect:myTaskList.html";
+	}
+	
+	/**
+	 * 打开任务表单
+	 */
+	@RequestMapping(value="viewTaskForm")
+	public String viewTaskForm(Model model, MyTask task){
+		//任务ID
+		String taskId = task.getTaskId();
+		//获取任务表单中任务节点的url连接
+		String url = workflowService.findTaskFormKeyByTaskId(taskId);
+		url = "audit_leave";
+		model.addAttribute("taskId", taskId);
+		model.addAttribute("url", url);
+		return "redirect:" + url + ".html";
+	}
+	
+	/**
+	 *  准备表单数据
+	 * @return
+	 */
+	@RequestMapping(value="audit_leave")
+	public String audit_leave(HttpServletRequest request, Model model){
+		//获取任务ID
+		String taskId = request.getParameter("taskId");
+		/**一：使用任务ID，查找请假单ID，从而获取请假单信息*/
+		BusLeave leave = workflowService.findLeaveBillByTaskId(taskId);
+		model.addAttribute("leave",leave);
+		/**二：已知任务ID，查询ProcessDefinitionEntiy对象，从而获取当前任务完成之后的连线名称，并放置到List<String>集合中*/
+		List<String> outcomeList = workflowService.findOutComeListByTaskId(taskId);
+		model.addAttribute("outcomeList", outcomeList);
+		/**三：查询所有历史审核人的审核信息，帮助当前人完成审核，返回List<Comment>*/
+		List<Comment> commentList = workflowService.findCommentByTaskId(taskId);
+		model.addAttribute("commentList", commentList);
+		return "/background/workflow/taskFormUI";
 	}
 	
 	/**
