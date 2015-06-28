@@ -2,6 +2,7 @@ package com.erp.service;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -46,5 +47,17 @@ public interface IWorkflowService {
 
 	/**查询所有历史审核人的审核信息，帮助当前人完成审核，返回List<Comment>*/
 	public List<Comment> findCommentByTaskId(String taskId);
+
+	public void saveSubmitTask(MyTask task);
+
+	public List<MyTask> findApplyFormByName(PageView pageView, MyTask myTask);
+
+	/**查看请假单审批历史**/
+	public List<Comment> findLeaveCommentById(String id);
+
+	/**使用任务对象获取流程定义ID，查询流程定义对象*/
+	public ProcessDefinition findProcessDefinitionByTaskId(String taskId);
+
+	public Map<String, Object> findCoordingByTask(String taskId);
 
 }

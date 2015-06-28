@@ -54,6 +54,12 @@ public class LogAopAction {
 			name = "角色管理";
 		} else if (className.indexOf("User") > -1) {
 			name = "用户管理";
+		} else if (className.indexOf("BusStorage") > -1) {
+			name = "入库单管理";
+		} else if (className.indexOf("BusLeave") > -1) {
+			name = "请假单管理";
+		} else if (className.indexOf("Device") > -1) {
+			name = "设备管理";
 		}
 		// 操作类型
 		String opertype = "";

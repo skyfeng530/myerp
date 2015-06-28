@@ -12,4 +12,6 @@ public interface LeaveService{
 	public void add(BusLeave leave);
 
 	public void delete(String string);
+	
+	public BusLeave getById(String id);
 }

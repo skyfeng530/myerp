@@ -28,9 +28,14 @@ public class LeaveServiceImpl implements LeaveService {
 	}
 
 	@Override
-	public void delete(String string) {
+	public void delete(String id) {
 		// TODO Auto-generated method stub
-		
+		leaveDao.delete(id);
+	}
+
+	@Override
+	public BusLeave getById(String id) {
+		return leaveDao.getById(id);
 	}
 
 }

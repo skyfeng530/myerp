@@ -24,17 +24,14 @@
 
 <!--显示表单内容-->
 <div id=MainArea>
-    <form action="${pageContext.servletContext.contextPath }/background/workflow/myTaskList.html" method="post">
+    <form action="${pageContext.servletContext.contextPath }/background/workflow/submitForm_${url}.html" method="post">
 		<div class="ItemBlock_Title1"><!-- 信息说明 --><div class="ItemBlock_Title1">
         	<img border="0" width="4" height="7" src="${pageContext.servletContext.contextPath }/style/blue/images/item_point.gif" /> ${pd.name}申请单 </div> 
         </div>
         <div class="ItemBlockBorder">
-        	<c:if test="${pd.key eq 'BusLeave'}">
-	            <%@ include file="page/leave.jsp" %>
-        	</c:if>
-        	<c:if test="${pd.key ne 'BusLeave'}">
-            	<%@ include file="page/ruku.jsp" %>
-        	</c:if>
+            <c:if test="${not empty url}">
+	            <jsp:include page="page/${url}.jsp"/>
+            </c:if>
         </div>
         <!-- 表单操作 -->
         <div id="InputDetailBar">

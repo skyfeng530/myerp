@@ -15,13 +15,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<meta http-equiv="expires" content="0">    
 	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 	<meta http-equiv="description" content="This is my page">
+	<%-- <meta http-equiv="refresh" content="0;url=<%=basePath%>background/index.html"> --%>
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
   </head>
   
   <body>
-  <center>
-    <h3><a href="<%=basePath%>background/index.html">进入后台</a></h3></center>
+  <%//自动跳转至后台管理界面
+  response.sendRedirect(basePath + "background/index.html");
+  %>
   </body>
 </html>

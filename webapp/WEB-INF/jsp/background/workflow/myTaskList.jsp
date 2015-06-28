@@ -9,6 +9,18 @@
 	href="${pageContext.servletContext.contextPath }/css/fenyecss.css" />
 <link type="text/css" rel="stylesheet" 
 	href="${pageContext.servletContext.contextPath }/style/blue/pageCommon.css" />
+	<script type="text/javascript">
+	     function showProcessImage(taskId){
+	    	 var url = "${pageContext.servletContext.contextPath }/background/workflow/viewCurrentImage.html?taskId="+taskId;
+	    	 var h_sp1 = 600;
+	    	 var w_sp1 = 800;
+	    	//兼容IE，firefox,google.模态窗口居中问题
+	    	 var iTop2 = (window.screen.availHeight - 20 - h_sp1) / 2;
+	    	 var iLeft2 = (window.screen.availWidth - 10 - w_sp1) / 2;
+	    	 var params = 'menubar:no;dialogHeight=' + h_sp1 + 'px;dialogWidth=' + w_sp1 + 'px;dialogLeft=' + iLeft2 + 'px;dialogTop=' + iTop2 + 'px;resizable=yes;scrollbars=0;resizeable=0;center=yes;location:no;status:no;scroll:no'
+	    	 window.showModalDialog(url, window, params);
+	    }
+    </script> 
 </head>
 <body>
 <form id="fenye" name="fenye" action="${pageContext.servletContext.contextPath }/background/workflow/myTaskList.html" method="post">
@@ -53,7 +65,7 @@
 			</td>
 			<td>${key.assignee}</td>
 			<td><a href="${pageContext.servletContext.contextPath }/background/workflow/viewTaskForm.html?taskId=${key.id}">办理任务</a>
-				<a href="${pageContext.servletContext.contextPath }/background/workflow/myTaskList.html">查看当前流程图</a>
+				<a href="javascript:void(0);" onclick="showProcessImage('${key.id}');">查看当前流程图</a>
 			</td>
 		  </tr> 
           </c:forEach>

@@ -14,6 +14,14 @@ public class BusLeave {
 	private String username;// 请假人
 	private Integer state=0;// 请假单状态 0初始录入,1.开始审批,2为审批完成
 
+	public BusLeave() {
+		super();
+	}
+
+	public BusLeave(String username) {
+		this.username = username;
+	}
+
 	public Long getId() {
 		return id;
 	}

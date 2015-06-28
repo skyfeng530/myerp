@@ -13,6 +13,8 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -50,7 +52,9 @@ public class WorkflowServiceImpl implements IWorkflowService {
 	
 	@Autowired
 	private LeaveDao leaveDao;
-	
+	/**
+	 * 部署新流程
+	 */
 	@Override
 	public void saveNewDeploye(CommonsMultipartFile file, String filename) {
 		try {
@@ -75,6 +79,7 @@ public class WorkflowServiceImpl implements IWorkflowService {
 	@Override
 	public List<ProcessDefinition> findProcessDefinitionList() {
 		List<ProcessDefinition> pdlist = repositoryService.createProcessDefinitionQuery()
+						.latestVersion()
 						.orderByProcessDefinitionVersion().asc()
 						.list();
 		return pdlist;
@@ -102,29 +107,31 @@ public class WorkflowServiceImpl implements IWorkflowService {
 	/**启动流程**/
 	@Override
 	public void saveStartProcess(MyTask task) {
-		//1：获取请假单ID，使用请假单ID，查询请假单的对象LeaveBill
 		Long id = task.getId();
-		BusLeave leave = leaveDao.getById(id + "");
-		//2：更新请假单的请假状态从0变成1（初始录入-->审核中）
-		leave.setState(1);
-		leaveDao.modify(leave);
-		//3：使用当前对象获取到流程定义的key（对象的名称就是流程定义的key）
-		String key = leave.getClass().getSimpleName();
-		/**
-		 * 4：获取当前任务的办理人，使用流程变量设置下一个任务的办理人
-			    * inputUser是流程变量的名称，
-			    * 获取的办理人是流程变量的值
-		 */
+		String pdid = task.getPdid();
+		String key = "";
 		Map<String, Object> variables = new HashMap<String,Object>();
-		variables.put("inputUser", leave.getUsername());//表示惟一用户
-		/**
-		 * 5：(1)使用流程变量设置字符串（格式：LeaveBill.id的形式），通过设置，让启动的流程（流程实例）关联业务
-   			 (2)使用正在执行对象表中的一个字段BUSINESS_KEY（Activiti提供的一个字段），让启动的流程（流程实例）关联业务
-		 */
-		//格式：LeaveBill.id的形式（使用流程变量）
+		if ("BusLeave".equals(pdid)) {
+			BusLeave leave = leaveDao.getById(id + "");
+			//更新请假单的请假状态从0变成1（初始录入-->审核中）
+			leave.setState(1);
+			leaveDao.modify(leave);
+			//使用当前对象获取到流程定义的key（对象的名称就是流程定义的key）
+			key = leave.getClass().getSimpleName();
+			variables.put("inputUser", leave.getUsername());//表示惟一用户
+		}
+		if ("BusStorage".equals(pdid)) {
+			/*BusStorage storage = storageDao.getById(id + "");
+			//更新请假单的请假状态从0变成1（初始录入-->审核中）
+			storage.setState(1);
+			storageDao.modify(storage);
+			//使用当前对象获取到流程定义的key（对象的名称就是流程定义的key）
+			key = storage.getClass().getSimpleName();
+			variables.put("inputUser", storage.getUsername());//表示惟一用户
+*/		}
+		//格式：类名.id的形式（使用流程变量）
 		String objId = key+"."+id;
 		variables.put("objId", objId);
-		//6：使用流程定义的key，启动流程实例，同时设置流程变量，同时向正在执行的执行对象表中的字段BUSINESS_KEY添加业务数据，同时让流程关联业务
 		runtimeService.startProcessInstanceByKey(key,objId,variables);
 	}
 
@@ -148,22 +155,16 @@ public class WorkflowServiceImpl implements IWorkflowService {
 	/**一：使用任务ID，查找请假单ID，从而获取请假单信息*/
 	@Override
 	public BusLeave findLeaveBillByTaskId(String taskId) {
-		//1：使用任务ID，查询任务对象Task
 		Task task = taskService.createTaskQuery()//
 						.taskId(taskId)//使用任务ID查询
 						.singleResult();
-		//2：使用任务对象Task获取流程实例ID
 		String processInstanceId = task.getProcessInstanceId();
-		//3：使用流程实例ID，查询正在执行的执行对象表，返回流程实例对象
 		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
 						.processInstanceId(processInstanceId)//使用流程实例ID查询
 						.singleResult();
-		//4：使用流程实例对象获取BUSINESS_KEY
 		String buniness_key = pi.getBusinessKey();
-		//5：获取BUSINESS_KEY对应的主键ID，使用主键ID，查询请假单对象（BusLeave.1）
 		String id = "";
 		if(StringUtils.isNotBlank(buniness_key)){
-			//截取字符串，取buniness_key小数点的第2个值
 			id = buniness_key.split("\\.")[1];
 		}
 		//查询请假单对象
@@ -183,17 +184,12 @@ public class WorkflowServiceImpl implements IWorkflowService {
 		String processDefinitionId = task.getProcessDefinitionId();
 		//3：查询ProcessDefinitionEntiy对象
 		ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processDefinitionId);
-		//使用任务对象Task获取流程实例ID
 		String processInstanceId = task.getProcessInstanceId();
-		//使用流程实例ID，查询正在执行的执行对象表，返回流程实例对象
 		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
 					.processInstanceId(processInstanceId)//使用流程实例ID查询
 					.singleResult();
-		//获取当前活动的id
 		String activityId = pi.getActivityId();
-		//4：获取当前的活动
 		ActivityImpl activityImpl = processDefinitionEntity.findActivity(activityId);
-		//5：获取当前活动完成之后连线的名称
 		List<PvmTransition> pvmList = activityImpl.getOutgoingTransitions();
 		if(pvmList!=null && pvmList.size()>0){
 			for(PvmTransition pvm:pvmList){
@@ -220,21 +216,151 @@ public class WorkflowServiceImpl implements IWorkflowService {
 				.singleResult();
 		//获取流程实例ID
 		String processInstanceId = task.getProcessInstanceId();
-//		//使用流程实例ID，查询历史任务，获取历史任务对应的每个任务ID
-//		List<HistoricTaskInstance> htiList = historyService.createHistoricTaskInstanceQuery()//历史任务表查询
-//						.processInstanceId(processInstanceId)//使用流程实例ID查询
-//						.list();
-//		//遍历集合，获取每个任务ID
-//		if(htiList!=null && htiList.size()>0){
-//			for(HistoricTaskInstance hti:htiList){
-//				//任务ID
-//				String htaskId = hti.getId();
-//				//获取批注信息
-//				List<Comment> taskList = taskService.getTaskComments(htaskId);//对用历史完成后的任务ID
-//				list.addAll(taskList);
-//			}
-//		}
 		list = taskService.getProcessInstanceComments(processInstanceId);
 		return list;
+	}
+
+	@Override
+	public void saveSubmitTask(MyTask myTask) {
+		//获取任务ID
+		String taskId = myTask.getTaskId();
+		//获取连线的名称
+		String outcome = myTask.getOutcome();
+		//批注信息
+		String message = myTask.getComment();
+		//获取请假单ID
+		Long id = myTask.getId();
+		//下一步处理人
+		String nextName = myTask.getNextName();
+		
+		//使用任务ID，查询任务对象，获取流程流程实例ID
+		Task task = taskService.createTaskQuery()//
+						.taskId(taskId)//使用任务ID查询
+						.singleResult();
+		//获取流程实例ID
+		String processInstanceId = task.getProcessInstanceId();
+		ProcessInstance pi1 = runtimeService.createProcessInstanceQuery()//
+				.processInstanceId(processInstanceId)//使用流程实例ID查询
+				.singleResult();
+		String className = pi1.getBusinessKey().split("\\.")[0];
+		Authentication.setAuthenticatedUserId(myTask.getUsername());
+		taskService.addComment(taskId, processInstanceId, message);
+		Map<String, Object> variables = new HashMap<String,Object>();
+		if(outcome!=null && !outcome.equals("默认提交")){
+			variables.put("outcome", outcome);
+		}
+		variables.put("inputUser", nextName);
+		taskService.complete(taskId, variables);
+		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
+						.processInstanceId(processInstanceId)//使用流程实例ID查询
+						.singleResult();
+		//流程结束了
+		if(pi==null){
+			//更新请假单表的状态从1变成2（审核中-->审核完成）
+			if ("BusLeave".equals(className)) {
+				BusLeave bill = leaveDao.getById(id + "");
+				bill.setState(2);
+				leaveDao.modify(bill);
+			}
+			if ("BusStorage".equals(className)) {
+				/*BusStorage storage = storageDao.getById(id + "");
+				storage.setState(2);
+				leaveDao.modify(storage);*/
+			}
+		}
+	}
+
+	@Override
+	public List<MyTask> findApplyFormByName(PageView pageView, MyTask myTask) {
+		//查询所有流程定义
+		List<MyTask> tasks = new ArrayList<MyTask>();
+		List<ProcessDefinition> pdList = findProcessDefinitionList();
+		//将所有流程定义，封装到MyTask类
+		if (null != pdList && pdList.size() > 0) {
+			for (ProcessDefinition pd : pdList) {
+				String className = pd.getKey();
+				String pdname = pd.getName();
+				if ("BusLeave".equals(className)) {
+					BusLeave busLeave = new BusLeave(myTask.getUsername());
+					List<BusLeave> leaves = leaveDao.query(pageView, busLeave);
+					for (BusLeave leave : leaves) {
+						MyTask t = new MyTask();
+						t.setId(leave.getId());
+						t.setApplyDate(leave.getLeaveDate());
+						t.setPdid(className);
+						t.setPdname(pdname);
+						t.setTitle(leave.getContent());
+						t.setUsername(leave.getUsername());
+						t.setState(leave.getState());
+						tasks.add(t);
+					}
+				}
+			}
+		}
+		return tasks;
+	}
+	
+	/**查看请假单审批历史**/
+	@Override
+	public List<Comment> findLeaveCommentById(String id) {
+		//使用请假单ID，查询请假单对象
+		BusLeave leave = leaveDao.getById(id);
+		//获取对象的名称
+		String objectName = leave.getClass().getSimpleName();
+		//组织流程表中的字段中的值
+		String objId = objectName+"."+id;
+		
+		HistoricVariableInstance hvi = historyService.createHistoricVariableInstanceQuery()//对应历史的流程变量表
+						.variableValueEquals("objId", objId)//使用流程变量的名称和流程变量的值查询
+						.singleResult();
+		//流程实例ID
+		String processInstanceId = hvi.getProcessInstanceId();
+		List<Comment> list = taskService.getProcessInstanceComments(processInstanceId);
+		return list;
+	}
+	/**使用任务对象获取流程定义ID，查询流程定义对象*/
+	@Override
+	public ProcessDefinition findProcessDefinitionByTaskId(String taskId) {
+		//使用任务ID，查询任务对象
+		Task task = taskService.createTaskQuery()//
+					.taskId(taskId)
+					.singleResult();
+		//获取流程定义ID
+		String processDefinitionId = task.getProcessDefinitionId();
+		//查询流程定义的对象
+		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery() 
+					.processDefinitionId(processDefinitionId)
+					.singleResult();
+		return pd;
+	}
+	
+	@Override
+	public Map<String, Object> findCoordingByTask(String taskId) {
+		//存放坐标
+		Map<String, Object> map = new HashMap<String,Object>();
+		//使用任务ID，查询任务对象
+		Task task = taskService.createTaskQuery()//
+					.taskId(taskId)//使用任务ID查询
+					.singleResult();
+		//获取流程定义的ID
+		String processDefinitionId = task.getProcessDefinitionId();
+		//获取流程定义的实体对象（对应.bpmn文件中的数据）
+		ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity)repositoryService.getProcessDefinition(processDefinitionId);
+		//流程实例ID
+		String processInstanceId = task.getProcessInstanceId();
+		//使用流程实例ID，查询正在执行的执行对象表，获取当前活动对应的流程实例对象
+		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//创建流程实例查询
+					.processInstanceId(processInstanceId)//使用流程实例ID查询
+					.singleResult();
+		//获取当前活动的ID
+		String activityId = pi.getActivityId();
+		//获取当前活动对象
+		ActivityImpl activityImpl = processDefinitionEntity.findActivity(activityId);//活动ID
+		//获取坐标
+		map.put("x", activityImpl.getX());
+		map.put("y", activityImpl.getY());
+		map.put("width", activityImpl.getWidth());
+		map.put("height", activityImpl.getHeight());
+		return map;
 	}
 }

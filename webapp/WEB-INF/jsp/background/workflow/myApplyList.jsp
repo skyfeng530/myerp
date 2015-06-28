@@ -74,7 +74,7 @@
 		</tr>
         <c:forEach var="key" items="${pageView.records}">
           <tr>
-            <td><a href="${pageContext.servletContext.contextPath }/Flow_Formflow/showForm.html">${key.title}</a></td>
+            <td>${key.title}</td>
 			<td>${key.pdname}</td>
 			<td>${key.username}</td>
 			<td>
@@ -87,16 +87,14 @@
 			</td>
 			<td>
 				<c:if test="${key.state eq 0}">
-	       			<a href="${pageContext.request.contextPath }/leaveBillAction_input.action?id=${key.id}">修改</a>
-					<a href="leaveBillAction_delete.action?id=${key.id}" >删除</a>
+	       			<a href="${pageContext.request.contextPath }/background/workflow/input.html?id=${key.id}">修改</a>
 					<a href="${pageContext.servletContext.contextPath }/background/workflow/startProcess.html?id=${key.id}&pdid=${key.pdid}">申请请假</a>
 	       		</c:if>
 				<c:if test="${key.state eq 1}">
-					<a href="${pageContext.request.contextPath }/workflowAction_viewHisComment.action?id=${key.id}">查看审核记录</a>
+					<a href="${pageContext.request.contextPath }/background/workflow/hisComment.html?id=${key.id}">查看审核记录</a>
 				</c:if>
 				<c:if test="${key.state eq 2}">
-					<a href="leaveBillAction_delete.action?id=${key.id}" >删除</a>
-					<a href="${pageContext.request.contextPath }/workflowAction_viewHisComment.action?id=${key.id}">查看审核记录</a>
+					<a href="${pageContext.request.contextPath }/background/workflow/hisComment.html?id=${key.id}">查看审核记录</a>
 				</c:if>
 			</td>
 		  </tr> 
