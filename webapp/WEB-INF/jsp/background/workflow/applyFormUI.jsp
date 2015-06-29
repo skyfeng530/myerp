@@ -1,13 +1,13 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@include file="../../common/common-css.jsp"%>
 <%@include file="../../common/taglib.jsp"%>
+<%@include file="../../common/include.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<title>提交申请</title>
     <link type="text/css" rel="stylesheet" href="${pageContext.servletContext.contextPath }/style/blue/pageCommon.css" />
-    <script type="text/javascript">
-    </script>
+    <script type="text/javascript" src="${pageContext.servletContext.contextPath }/js/workflow/Materialtransfer_view.js"></script>
 </head>
 <body>
 
@@ -21,7 +21,7 @@
         <div id="Title_End"></div>
     </div>
 </div>
-
+<div id="main_id"></div>
 <!--显示表单内容-->
 <div id=MainArea>
     <form action="${pageContext.servletContext.contextPath }/background/workflow/submitForm_${url}.html" method="post">

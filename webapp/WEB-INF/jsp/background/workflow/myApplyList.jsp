@@ -91,10 +91,10 @@
 					<a href="${pageContext.servletContext.contextPath }/background/workflow/startProcess.html?id=${key.id}&pdid=${key.pdid}">申请请假</a>
 	       		</c:if>
 				<c:if test="${key.state eq 1}">
-					<a href="${pageContext.request.contextPath }/background/workflow/hisComment.html?id=${key.id}">查看审核记录</a>
+					<a href="${pageContext.request.contextPath }/background/workflow/hisComment.html?id=${key.id}&pdid=${key.pdid}">查看审核记录</a>
 				</c:if>
 				<c:if test="${key.state eq 2}">
-					<a href="${pageContext.request.contextPath }/background/workflow/hisComment.html?id=${key.id}">查看审核记录</a>
+					<a href="${pageContext.request.contextPath }/background/workflow/hisComment.html?id=${key.id}&pdid=${key.pdid}">查看审核记录</a>
 				</c:if>
 			</td>
 		  </tr> 

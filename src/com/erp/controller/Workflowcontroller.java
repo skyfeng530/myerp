@@ -318,19 +318,20 @@ public class Workflowcontroller{
 	public String hisComment(Model model, MyTask task){
 		//获取清单ID
 		String id = task.getId() + "";
-		//使用请假单ID，查询请假单对象
-		BusLeave leave = leaveService.getById(id);
-		model.addAttribute("leave", leave);
+		String className = task.getPdid();
 		//使用请假单ID，查询历史的批注信息
 		List<Comment> commentList = workflowService.findLeaveCommentById(id);
 		model.addAttribute("commentList", commentList);
 		//根据流程定义的key设置url
-		model.addAttribute("url", "leave");
-		/*if ("BusLeave".equals(pd.getKey())) {
+		if ("BusLeave".equals(className)) {
+			//使用请假单ID，查询请假单对象
+			BusLeave leave = leaveService.getById(id);
+			model.addAttribute("leave", leave);
+			model.addAttribute("url", "leave");
 		}
-		if ("BusStorage".equals(pd.getKey())) {
+		if ("BusStorage".equals(className)) {
 			model.addAttribute("url", "storage");
-		}*/
+		}
 		return "/background/workflow/taskFormHis";
 	}
 }

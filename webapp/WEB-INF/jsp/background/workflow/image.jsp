@@ -1,9 +1,18 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@include file="../../common/taglib.jsp" %>
+<%@include file="../../common/common-js.jsp" %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>查看当前流程图</title>
+<script type="text/javascript">
+$(document).ready(function() {  
+       $(document).bind("contextmenu",function(e) {                
+        alert("sorry! No right-clicking!");  
+        return false;  
+       });  
+});
+</script>
 </head>
 <body>
 <!-- 1.获取到规则流程图 -->

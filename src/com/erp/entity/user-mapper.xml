@@ -48,6 +48,12 @@
 				</if>
 		</where>
 	</select>
+	<!--resultType="User" 每返回一条结果封装到User里 -->
+	<select id="queryAll" resultType="User" parameterType="User">
+		select
+		<include refid="selectId" />
+		from user
+	</select>
 	<!-- 总记录数 -->
 	<select id="count" parameterType="User" resultType="int">
 		select count(0) from user
